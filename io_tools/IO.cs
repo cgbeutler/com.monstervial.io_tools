@@ -24,17 +24,16 @@ namespace MonsterVial
 
     /// <summary> The path of your project at compile time. </summary>
     public static string ProjectPath { get; }
-    private const string __THIS_FILE_PROJ_PATH = "addons/com.monstervial.io_tools/io_tools/IO.cs";
     private static string __InitProjectPath( [CallerFilePath] string callerPath = "" )
     {
       callerPath = callerPath.Replace( System.IO.Path.DirectorySeparatorChar, '/' );
-      if (!callerPath.EndsWith( "/" + __THIS_FILE_PROJ_PATH ))
+      if (!callerPath.EndsWith( "/" + IOToolsSettings.IO_SCRIPT_PROJ_PATH ))
       {
-        // If you get the following error, update the constant '__THIS_FILE_PROJ_PATH' to match this file's new project path
-        GD.PushError( "Failed to get project path. Path to IO.cs may have changed." );
-        throw new System.Exception( "Failed to get project path. Path to IO.cs may have changed." );
+        // If you get the following error, update the constant 'IOToolsSettings.IO_SCRIPT_PROJ_PATH' to match THIS file's new project path
+        GD.PushError( "Failed to get project path. Path to IO.cs may have changed. Verify that the constant 'IO_SCRIPT_PROJ_PATH' in 'IOToolsSettings.cs' is correct." );
+        throw new System.Exception( "Failed to get project path. Path to IO.cs may have changed. Verify that the constant 'IO_SCRIPT_PROJ_PATH' in 'IOToolsSettings.cs' is correct." );
       }
-      return callerPath.Remove( callerPath.Length - __THIS_FILE_PROJ_PATH.Length );
+      return callerPath.Remove( callerPath.Length - IOToolsSettings.IO_SCRIPT_PROJ_PATH.Length );
     }
     static IO() { ProjectPath = __InitProjectPath(); }
 
@@ -119,7 +118,7 @@ namespace MonsterVial
       __LocalizeIfRelative( ref filepath, callerPath );
       return new Directory().FileExists( filepath );
     }
-    
+
     /// <summary> Checks to see if a file or directory exists. </summary>
     /// <param name="path">
     ///   Path to file or directory to look for.
@@ -629,7 +628,7 @@ namespace MonsterVial
       var res = ResourceLoader.Load<TResource>( path, typeHint, noCache );
       if (res != null)
       {
-        if (IOToolsPlugin.CALL_READY_ON_RESOURCES)
+        if (IOToolsSettings.CALL_READY_ON_RESOURCES)
         {
           var readyMethod = typeof(TResource).GetMethod( "_Ready", System.Type.EmptyTypes );
           if (readyMethod != null)
@@ -672,7 +671,7 @@ namespace MonsterVial
         GD.PushError( "Invalid Parameter:  Path was emtpy" );
         return result.WithError( Error.Bug, "Invalid Parameter:  Path was emtpy" );
       }
-      
+
       // If it doesn't exist, we are done
       if (noCache ? !FileExists( path ) : !ResourceLoader.Exists( path )) { return result.WithError( Error.FileCantOpen ); }
       // Try loading the file
@@ -717,7 +716,7 @@ namespace MonsterVial
       var res = ResourceLoader.Load( path, "Resource", noCache );
       if (res is TResource tRes)
       {
-        if (IOToolsPlugin.CALL_READY_ON_RESOURCES)
+        if (IOToolsSettings.CALL_READY_ON_RESOURCES)
         {
           var readyMethod = typeof(TResource).GetMethod( "_Ready", System.Type.EmptyTypes );
           if (readyMethod != null)

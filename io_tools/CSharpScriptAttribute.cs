@@ -11,7 +11,7 @@ using Array = Godot.Collections.Array;
 
   // Later, create new resources with
   CSharpScript<CustomResource>.New()
-  
+
   // Report issues to the gist at: https://gist.github.com/cgbeutler/c4f00b98d744ac438b84e8840bbe1740
 */
 
@@ -84,7 +84,7 @@ namespace Godot
       {
         var o = script.New();
         var t = (T) o;
-        if (IOToolsPlugin.CALL_READY_ON_RESOURCES && typeof(Resource).IsAssignableFrom(typeof(T)))
+        if (IOToolsSettings.CALL_READY_ON_RESOURCES && typeof(Resource).IsAssignableFrom(typeof(T)))
         {
           var readyMethod = typeof(T).GetMethod( "_Ready", Type.EmptyTypes );
           if (readyMethod != null) { readyMethod.Invoke( t, __emptyObj ); }
